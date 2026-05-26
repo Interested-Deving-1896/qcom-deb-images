@@ -1,69 +1,29 @@
-# Qualcomm Linux deb images
+[update-readmes]   Mode: rewrite — migrating to template structure...
+# qcom-deb-images
 
-[![build on push status](https://img.shields.io/github/actions/workflow/status/qualcomm-linux/qcom-deb-images/build-on-push.yml?label=build%20on%20push)](https://github.com/qualcomm-linux/qcom-deb-images/actions/workflows/build-on-push.yml)
-[![daily build status](https://img.shields.io/github/actions/workflow/status/qualcomm-linux/qcom-deb-images/build-daily.yml?label=daily%20build)](https://github.com/qualcomm-linux/qcom-deb-images/actions/workflows/build-daily.yml)
-[![daily qcom-next build status](https://img.shields.io/github/actions/workflow/status/qualcomm-linux/qcom-deb-images/linux-daily-qcom-next.yml?label=daily%20qcom-next%20build)](https://github.com/qualcomm-linux/qcom-deb-images/actions/workflows/linux-daily-qcom-next.yml)
-[![daily linux-next build status](https://img.shields.io/github/actions/workflow/status/qualcomm-linux/qcom-deb-images/linux-daily-linux-next.yml?label=daily%20linux-next%20build)](https://github.com/qualcomm-linux/qcom-deb-images/actions/workflows/linux-daily-linux-next.yml)
-[![weekly mainline build status](https://img.shields.io/github/actions/workflow/status/qualcomm-linux/qcom-deb-images/linux-weekly-mainline.yml?label=weekly%20mainline%20build)](https://github.com/qualcomm-linux/qcom-deb-images/actions/workflows/linux-weekly-mainline.yml)
+[![Built with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/Interested-Deving-1896/qcom-deb-images)
 
-A collection of recipes to build Qualcomm Linux images for deb based operating systems. The current focus of this project is to provide mainline-centric images for Qualcomm® IoT platforms as to demonstrate the state of upstream open source software, help developers getting started, and support continuous development and continuous testing efforts.
+<!-- AI:start:what-it-does -->
+_Description pending._
+<!-- AI:end:what-it-does -->
 
-Initially, this repository provides [debos](https://github.com/go-debos/debos) recipes based on Debian trixie for boards such as the Qualcomm RB3 Gen 2.
+## Architecture
 
-We are also working towards providing ready-to-use, pre-built images – stay tuned!
+<!-- AI:start:architecture -->
+_Architecture documentation pending._
+<!-- AI:end:architecture -->
 
-## Firmware updates
+## Install
 
-On standard Linux distros like Debian, firmware updates are generally delivered via Linux Vendor Firmware Service ([LVFS](https://fwupd.org/)). The OEM/ODM vendors usually upload latest firmware releases on LVFS (refer [here](https://lvfs.readthedocs.io/en/latest/upload.html)) as cabinet (.cab) firmware archive files containing at least one metadata (.metainfo.xml) file describing the firmware update. On the device, fwupd is installed which provides a system-activated daemon listening on D-Bus for installing any firmware updates.
-
-### Firmware delivery
-
-On a Desktop system, it's usually GNOME Software which monitors LVFS for any firmware updates and pushes to fwupd if any. On a headless system like most embedded devices, the fwupdmgr command-line tool can be used to monitor LVFS for firmware updates as follows:
+<!-- Add installation instructions here. This section is yours — the AI will not modify it. -->
 
 ```bash
-# Download latest metadata from LVFS
-fwupdmgr refresh
-
-# Fetch device specific firmware updates from LVFS
-fwupdmgr get-updates
-
-# Install firmware updates
-fwupdmgr update
-```
-
-### Firmware on devices supported by Qualcomm Linux
-
-The firmware on Qualcomm devices is expected to support UEFI UpdateCapsule plugin for fwupd daemon. However, currently firmware for Qualcomm devices is not available in LVFS which is a work in progress as of now. In order to play with UEFI firmware capsule updates, one can use fwupdtool to locally update firmware like on RB1 as follows:
-
-```bash
-# Transfer U-Boot firmware cabinet archive built by scripts/build-u-boot-rb1.sh to RB1
-sudo fwupdtool install u-boot.cab
-# It will ask for a reboot for the UEFI firmware capsule update to happen
-```
-
-## Branches
-
-main: Primary development branch. Contributors should develop submissions based on this branch, and submit pull requests to this branch.
-
-## Requirements
-
-[debos](https://github.com/go-debos/debos) is required to build the debos recipes. Recent debos packages should be available in Debian and Ubuntu repositories; there are [debos installation instructions](https://github.com/go-debos/debos?tab=readme-ov-file#installation-from-source-under-debian) on the project's page, notably for Docker images and to build debos from source. Make sure to use at least version 1.1.5 which supports setting the sector size.
-
-[qdl](https://github.com/linux-msm/qdl) is typically used for flashing. While recent versions are available in Debian and Ubuntu, make sure to use at least version 2.1 as it contains important fixes.
-
-### Optional requirements
-
-Building U-Boot for the RB1 requires the following build-dependencies:
-```bash
-apt -y install git crossbuild-essential-arm64 make bison flex bc libssl-dev gnutls-dev xxd coreutils gzip mkbootimg
-```
-
-Building a Linux kernel deb requires the following build-dependencies:
-```bash
-apt -y install git crossbuild-essential-arm64 make flex bison bc libdw-dev libelf-dev libssl-dev libssl-dev:arm64 dpkg-dev debhelper-compat kmod python3 rsync coreutils
+git clone https://github.com/Interested-Deving-1896/qcom-deb-images.git
+cd qcom-deb-images
 ```
 
 ## Usage
+
 
 To build flashable assets for all supported boards, follow these steps:
 
@@ -198,53 +158,50 @@ To enter EDL mode:
 
 NB: It's also possible to run qdl from the host while the board is not connected, then start the board directly in EDL mode.
 
-## Development
+## Configuration
 
-Want to join in the development? Changes welcome! See [CONTRIBUTING.md file](CONTRIBUTING.md) for step by step instructions.
+<!-- Document configuration options here. This section is yours — the AI will not modify it. -->
 
-### Boot an image locally with QEMU (helper script)
+## CI
 
-Use the `scripts/run-qemu.py` helper to boot generated disk images under QEMU. It automatically:
-- Detects your OS and locates an aarch64 UEFI firmware (Debian/Ubuntu: qemu-efi-aarch64; macOS Homebrew: edk2-aarch64).
-- Presents the image via SCSI with the correct sector size (4096 for UFS, 512 for SD/eMMC).
-- Creates a temporary qcow2 copy-on-write overlay by default (your base image remains unchanged).
-- Provides GUI display by default (Gtk on Linux, Cocoa on macOS) and headless mode with `--headless`.
+<!-- AI:start:ci -->
+_CI documentation pending._
+<!-- AI:end:ci -->
 
-Dependencies:
-- Debian/Ubuntu: `sudo apt install qemu-efi-aarch64 qemu-system-arm qemu-utils`
-- macOS (Homebrew): `brew install qemu`
+## Mirror chain
 
-Basic usage:
-```bash
-# Auto-detects disk-ufs.img or disk-sdcard.img in the current directory
-scripts/run-qemu.py
+<!-- AI:start:mirror-chain -->
+This repo is maintained in [`Interested-Deving-1896/qcom-deb-images`](https://github.com/Interested-Deving-1896/qcom-deb-images) and mirrored through:
 
-# Explicit storage type (sector size set accordingly)
-scripts/run-qemu.py --storage ufs
-scripts/run-qemu.py --storage sdcard
-
-# Use a specific image path
-scripts/run-qemu.py --image /path/to/disk-ufs.img
-
-# Run headless (no GUI), with serial console on stdio
-scripts/run-qemu.py --headless
-
-# Disable the COW overlay to persist changes to the image
-scripts/run-qemu.py --no-cow
-
-# Pass extra QEMU arguments (example: 4 vCPUs and 4 GiB RAM)
-scripts/run-qemu.py --qemu-args "-smp 4 -m 4096"
+```
+Interested-Deving-1896/qcom-deb-images  ──►  OpenOS-Project-OSP/qcom-deb-images  ──►  OpenOS-Project-Ecosystem-OOC/qcom-deb-images
 ```
 
-Notes:
-- If neither `disk-ufs.img` nor `disk-sdcard.img` is found and `--image` is not provided, the script will exit with an error.
-- On Linux, the script looks for `/usr/share/qemu-efi-aarch64/QEMU_EFI.fd`. On macOS with Homebrew, it uses `share/qemu/edk2-aarch64-code.fd` from the `qemu` formula.
-- The overlay is cleaned up automatically when QEMU exits. Use `--no-cow` to make changes persistent on the base image.
+Changes flow downstream automatically via the hourly mirror chain in
+[`fork-sync-all`](https://github.com/Interested-Deving-1896/fork-sync-all).
+Direct commits to OSP or OOC are detected and opened as PRs back to `Interested-Deving-1896`.
+<!-- AI:end:mirror-chain -->
 
-## Reporting Issues
+## Contributors
 
-We'd love to hear if you run into issues or have ideas for improvements. [Report an Issue on GitHub](../../issues) to discuss, and try to include as much information as possible on your specific environment.
+<!-- AI:start:contributors -->
+_Contributors pending._
+<!-- AI:end:contributors -->
+
+## Origins
+
+<!-- AI:start:origins -->
+_Original project — no upstream fork._
+<!-- AI:end:origins -->
+
+## Resources
+
+<!-- AI:start:resources -->
+_No additional resource files found._
+<!-- AI:end:resources -->
 
 ## License
 
-This project is licensed under the [BSD-3-clause License](https://spdx.org/licenses/BSD-3-Clause.html). See [LICENSE.txt](LICENSE.txt) for the full license text.
+<!-- AI:start:license -->
+<!-- License not detected — add a LICENSE file to this repo. -->
+<!-- AI:end:license -->
