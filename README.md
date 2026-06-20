@@ -4,13 +4,35 @@
 [![Built with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/Interested-Deving-1896/qcom-deb-images)
 
 <!-- AI:start:what-it-does -->
-_Description pending._
+This project provides build scripts for generating Debian-based Linux images tailored for Qualcomm hardware. It addresses the need for reproducible and configurable image creation, supporting use cases such as development, testing, and deployment on Qualcomm platforms. It is primarily used by developers and system integrators working with Qualcomm SoCs.
 <!-- AI:end:what-it-does -->
 
 ## Architecture
 
 <!-- AI:start:architecture -->
-_Architecture documentation pending._
+The project builds Debian-based images for Qualcomm platforms using `debos`. Key components include:
+
+1. **Makefile**: Defines build targets for UFS and SD card images, leveraging `debos` with configurable options like `FAKEMACHINE_BACKEND` and `DEBOS_OPTS`. It also supports testing via `pytest`.
+2. **Debos Recipes**: YAML files in `debos-recipes/` specify the steps for creating the root filesystem (`qualcomm-linux-debian-rootfs.yaml`) and disk images (`qualcomm-linux-debian-image.yaml`).
+3. **CI Workflows**: Located in `.github/workflows/`, these automate builds, tests, and static checks for various configurations and scenarios.
+4. **Scripts and Overlays**: The `scripts/` directory contains helper scripts, while `overlay-debs/` provides additional Debian packages for customization.
+5. **Kernel Configurations**: The `kernel-configs/` directory holds configuration files for building custom kernels.
+
+Directory structure:
+```plaintext
+.
+├── .github/
+│   └── workflows/          # CI workflow definitions
+├── debos-recipes/          # YAML recipes for image creation
+├── kernel-configs/         # Kernel configuration files
+├── overlay-debs/           # Custom Debian packages
+├── scripts/                # Helper scripts
+├── Makefile                # Build and test targets
+├── README.md               # Project documentation
+└── LICENSE.txt             # Licensing information
+```
+
+Components interact via the Makefile, which orchestrates `debos` to generate images based on the recipes and integrates with CI workflows for automation.
 <!-- AI:end:architecture -->
 
 ## Install
@@ -165,7 +187,20 @@ NB: It's also possible to run qdl from the host while the board is not connected
 ## CI
 
 <!-- AI:start:ci -->
-_CI documentation pending._
+- `build-daily.yml`: Triggers daily builds of Debian images using the Makefile targets. No secrets required.
+- `build-on-pr.yml`: Runs image builds and tests for pull requests. No secrets required.
+- `build-on-push.yml`: Executes builds and tests on push events to main branches. No secrets required.
+- `build-overlay-deb.yml`: Builds overlay Debian packages. Requires `GH_TOKEN` for repository access.
+- `debos.yml`: Runs `debos` commands to generate images and rootfs artifacts. No secrets required.
+- `lava-schema-check.yml`: Validates LAVA job schema files. No secrets required.
+- `lava-test.yml`: Executes LAVA tests for hardware validation. Requires `LAVA_API_TOKEN` for LAVA server access.
+- `linux-daily-linux-next.yml`: Builds Linux images daily using the `linux-next` branch. No secrets required.
+- `linux-daily-qcom-next.yml`: Builds Linux images daily using the `qcom-next` branch. No secrets required.
+- `linux-weekly-mainline.yml`: Builds Linux images weekly using the mainline kernel. No secrets required.
+- `qcom-preflight-checks.yml`: Runs preflight checks for Qualcomm-specific configurations. No secrets required.
+- `static-checks.yml`: Performs static analysis on Python scripts. No secrets required.
+- `test-pr.yml`: Runs unit tests for pull requests. No secrets required.
+- `u-boot.yml`: Builds U-Boot bootloader images. No secrets required.
 <!-- AI:end:ci -->
 
 ## Mirror chain
@@ -185,7 +220,20 @@ Direct commits to OSP or OOC are detected and opened as PRs back to `Interested-
 ## Contributors
 
 <!-- AI:start:contributors -->
-_Contributors pending._
+[@lool](https://github.com/lool) (397 commits)  
+[@basak-qcom](https://github.com/basak-qcom) (27 commits)  
+[@lumag](https://github.com/lumag) (20 commits)  
+[@mwasilew](https://github.com/mwasilew) (11 commits)  
+[@doanac](https://github.com/doanac) (7 commits)  
+[@b49020](https://github.com/b49020) (3 commits)  
+[@Interested-Deving-1896](https://github.com/Interested-Deving-1896) (1 commit)  
+[@mynameistechno](https://github.com/mynameistechno) (1 commit)  
+[@mattface](https://github.com/mattface) (1 commit)  
+[@njjetha](https://github.com/njjetha) (1 commit)  
+[@ndechesne](https://github.com/ndechesne) (1 commit)  
+[@SuMere](https://github.com/SuMere) (1 commit)  
+
+*Note: This repository is a mirror. Please refer to the upstream source for additional contributions.*
 <!-- AI:end:contributors -->
 
 ## Origins
